@@ -1,0 +1,42 @@
+# Single-broker Apache Kafka 4.2 (KRaft mode) with the canary assignor mounted.
+#
+# Build the JAR first:
+#   ./mvnw package
+#
+# Then bring up the broker:
+#   docker compose up
+#
+# In another terminal, exercise the assignor with a canary and a few regular
+# consumers. See the README for the full walkthrough.
+
+services:
+  kafka:
+    image: apache/kafka:4.3.0-rc1
+    container_name: canary-assignor-kafka
+    ports:
+      - "9092:9092"
+    volumes:
+      # Mount the built JAR so the broker class-loader can find CanaryAssignor.
+      - ./target/kafka-assignor-examples-0.1.0.jar:/opt/kafka/libs/kafka-assignor-examples-0.1.0.jar:ro
+    environment:
+      # KRaft single-node setup.
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+      # Register the canary assignor in addition to the built-in uniform and range ones.
+      KAFKA_GROUP_CONSUMER_ASSIGNORS: "uniform,range,dev.dajac.assignor.canary.CanaryAssignor"
+
+      # CanaryAssignor configs - members whose client.rack equals "canary" are
+      # treated as canary and capped at one partition each.
+      KAFKA_CANARY_ASSIGNOR_RACK: "canary"
+      KAFKA_CANARY_ASSIGNOR_MAX_PARTITIONS_PER_MEMBER: "2"
