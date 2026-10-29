@@ -54,7 +54,7 @@ Add a single Maven dependency:
 <dependency>
     <groupId>org.apache.kafka</groupId>
     <artifactId>kafka-group-coordinator-api</artifactId>
-    <version>4.2.0</version>
+    <version>4.4.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -165,7 +165,7 @@ client.rack=canary
 docker compose up
 ```
 
-The compose file runs a single Kafka 4.2.0 node in KRaft mode with the
+The compose file runs a single Kafka 4.4.0 node in KRaft mode with the
 freshly-built JAR mounted into `/opt/kafka/libs/`. See `docker-compose.yml`
 for the full configuration.
 
@@ -226,8 +226,8 @@ remaining 10 (5 each).
 
 [kip-848]: https://cwiki.apache.org/confluence/display/KAFKA/KIP-848%3A+The+Next+Generation+of+the+Consumer+Rebalance+Protocol
 [kafka-docs]: https://kafka.apache.org/documentation/
-[gc-api]: https://javadoc.io/doc/org.apache.kafka/kafka-group-coordinator-api/4.2.0/org/apache/kafka/coordinator/group/api/assignor/package-summary.html
-[jmh-assignor]: https://github.com/apache/kafka/tree/4.2.0/jmh-benchmarks/src/main/java/org/apache/kafka/jmh/assignor
+[gc-api]: https://javadoc.io/doc/org.apache.kafka/kafka-group-coordinator-api/4.4.0/org/apache/kafka/coordinator/group/api/assignor/package-summary.html
+[jmh-assignor]: https://github.com/apache/kafka/tree/4.4.0/jmh-benchmarks/src/main/java/org/apache/kafka/jmh/assignor
 
 ## License
 
